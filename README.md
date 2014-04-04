@@ -23,3 +23,5 @@ set :repo_url, 'path/to/source'
 :local_strategy can be :default or :archive.
 **:default** - directly uploads folder;
 **:archive** - makes tar.gz, uploads it and unpack.
+
+[![Gem Version](https://badge.fury.io/rb/capistrano-scm-local.svg)](http://badge.fury.io/rb/capistrano-scm-local)
