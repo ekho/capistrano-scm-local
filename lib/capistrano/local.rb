@@ -6,11 +6,13 @@ require 'zlib'
 require 'archive/tar/minitar'
 include Archive::Tar
 require 'tmpdir'
+require 'fileutils'
 
 class Capistrano::Local < Capistrano::SCM
   module DefaultStrategy
     def check
-      test! " [ -d #{repo_url} ] "
+      puts repo_url
+      test! " [ -e #{repo_url} ] "
     end
 
     def release
@@ -23,7 +25,7 @@ class Capistrano::Local < Capistrano::SCM
 
   module ArchiveStrategy
     def check
-      test! " [ -d #{repo_url} ] "
+      test! " [ -e #{repo_url} ] "
     end
 
     def release
@@ -32,8 +34,12 @@ class Capistrano::Local < Capistrano::SCM
       run_locally do
         archive = fetch(:tmp_dir, Dir::tmpdir()) + '/' + fetch(:application, 'distr') + "-#{release_timestamp}.tar.gz"
         unless File.exists?(archive)
-          Dir.chdir(repo_url) do
-            Minitar.pack('.', Zlib::GzipWriter.new(File.open(archive, 'wb')))
+          if File.directory?(repo_url) || !File.fnmatch('*.tar.gz', repo_url)
+            Dir.chdir(repo_url) do
+              Minitar.pack('.', Zlib::GzipWriter.new(File.open(archive, 'wb')))
+            end
+          else
+            FileUtils.cp(repo_url, archive)
           end
         end
       end
