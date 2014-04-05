@@ -22,7 +22,7 @@ namespace :local do
   desc 'Copy repo to releases'
   task :create_release do
     on release_roles :all do
-      within repo_path do
+      within releases_path do
         execute :mkdir, '-p', release_path
       end
     end

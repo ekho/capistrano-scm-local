@@ -46,8 +46,8 @@ class Capistrano::Local < Capistrano::SCM
 
       # uploading and unpacking
       on release_roles :all, in: :parallel do |host|
-        upload! archive, repo_path, verbose: false
-        remote_archive = File.join(repo_path, File.basename(archive))
+        upload! archive, releases_path, verbose: false
+        remote_archive = File.join(releases_path, File.basename(archive))
         execute :tar, 'xzf', remote_archive, '-C', release_path
         execute :rm, '-f', remote_archive
       end
