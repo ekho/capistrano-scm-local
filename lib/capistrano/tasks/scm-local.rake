@@ -1,9 +1,9 @@
 namespace :local do
 
   def local_strategy
-    strategies = {:default=>Capistrano::Local::DefaultStrategy, :archive=>Capistrano::Local::ArchiveStrategy}
+    strategies = {:plain=>Capistrano::Local::PlainStrategy, :archive=>Capistrano::Local::ArchiveStrategy}
 
-    m = fetch(:local_strategy ? :local_strategy : :default)
+    m = fetch(:local_strategy ? :local_strategy : :archive)
     unless m.is_a?(Module)
       abort "Invalid local_strategy: " + m.to_s unless strategies.include?(m)
       m = strategies[m]
@@ -27,5 +27,11 @@ namespace :local do
       end
     end
     local_strategy.release
+  end
+
+  desc 'Read revision from REVISION file if exists'
+  task :set_current_revision do
+    revision_file = File.join(repo_url, 'REVISION')
+    set :current_revision, File.exist?(revision_file) ? File.read(revision_file).strip : 'UNKNOWN'
   end
 end
