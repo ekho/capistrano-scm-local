@@ -1,4 +1,4 @@
-load File.expand_path("../tasks/scm-local.rake", __FILE__)
+load File.expand_path('../tasks/local.rake', __FILE__)
 
 require 'capistrano/scm'
 
@@ -60,5 +60,3 @@ class Capistrano::Local < Capistrano::SCM
     end
   end
 end
-
-set :capistrano_local_archive, Capistrano::Local::ArchiveStrategy
