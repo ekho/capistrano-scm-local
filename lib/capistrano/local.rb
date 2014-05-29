@@ -8,6 +8,8 @@ include Archive::Tar
 require 'tmpdir'
 require 'fileutils'
 
+require 'rake/packagetask'
+
 class Capistrano::Local < Capistrano::SCM
   module PlainStrategy
     def check
@@ -33,14 +35,15 @@ class Capistrano::Local < Capistrano::SCM
       archive = ''
       # preparing archive
       run_locally do
-        archive = fetch(:tmp_dir, Dir::tmpdir()) + '/' + fetch(:application, 'distr') + "-#{release_timestamp}.tar.gz"
+        archive = fetch(:tmp_dir, Dir::tmpdir()) + '/capistrano/' + fetch(:application, 'distr') + "-#{fetch(:current_revision)}.tar.gz"
+        execute :mkdir, '-p', File.dirname(archive)
         unless File.exists?(archive)
           if File.directory?(repo_url) || !File.fnmatch('*.tar.gz', repo_url)
-            Dir.chdir(repo_url) do
-              Minitar.pack('.', Zlib::GzipWriter.new(File.open(archive, 'wb')))
+            within repo_url do
+              execute :tar, 'czf', archive, './*'
             end
           else
-            FileUtils.cp(repo_url, archive)
+            execute :cp, repo_url, archive
           end
         end
       end
