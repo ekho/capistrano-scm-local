@@ -13,7 +13,6 @@ require 'rake/packagetask'
 class Capistrano::Local < Capistrano::SCM
   module PlainStrategy
     def check
-      puts repo_url
       test! " [ -e #{repo_url} ] "
     end
 
@@ -37,11 +36,17 @@ class Capistrano::Local < Capistrano::SCM
       run_locally do
         archive = fetch(:tmp_dir, Dir::tmpdir()) + '/capistrano/' + fetch(:application, 'distr') + "-#{fetch(:current_revision)}.tar.gz"
         execute :mkdir, '-p', File.dirname(archive)
+
+        if File.exists?(archive) && !test(:tar, 'tzf', archive)
+          execute :rm, '-f', archive
+        end
+
         unless File.exists?(archive)
           if File.directory?(repo_url) || !File.fnmatch('*.tar.gz', repo_url)
             within repo_url do
               execute :tar, 'czf', archive, './*'
             end
+            execute :tar, 'tzf', archive
           else
             execute :cp, repo_url, archive
           end
