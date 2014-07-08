@@ -1,9 +1,9 @@
-capistrano-scm-local
+capistrano-scm-local [![Gem Version](https://badge.fury.io/rb/capistrano-scm-local.svg)](http://badge.fury.io/rb/capistrano-scm-local)
 ====================
 
 allow deploy from local directory
 
-[![Gem Version](https://badge.fury.io/rb/capistrano-scm-local.svg)](http://badge.fury.io/rb/capistrano-scm-local)
+
 
 Capfile
 ```ruby
