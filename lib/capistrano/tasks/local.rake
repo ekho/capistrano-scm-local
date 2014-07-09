@@ -31,7 +31,9 @@ namespace :local do
 
   desc 'Read revision from REVISION file if exists'
   task :set_current_revision do
-    revision_file = File.join(repo_url, 'REVISION')
-    set :current_revision, File.exist?(revision_file) ? File.read(revision_file).strip : 'UNKNOWN'
+    unless fetch(:current_revision, false)
+      revision_file = File.join(repo_url, 'REVISION')
+      set :current_revision, File.exist?(revision_file) ? File.read(revision_file).strip : 'UNKNOWN'
+    end
   end
 end
