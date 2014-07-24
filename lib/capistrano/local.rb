@@ -44,7 +44,7 @@ class Capistrano::Local < Capistrano::SCM
         unless File.exists?(archive)
           if File.directory?(repo_url) || !File.fnmatch('*.tar.gz', repo_url)
             within repo_url do
-              execute :tar, 'czf', archive, './*'
+              execute :tar, 'czf', archive, '-C', repo_url, '.'
             end
             execute :tar, 'tzf', archive
           else
