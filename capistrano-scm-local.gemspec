@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "capistrano-scm-local"
-  s.version = "0.1.15"
+  s.version = "0.1.16"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Boris Gorbylev"]
-  s.date = "2014-09-11"
+  s.date = "2014-09-17"
   s.description = "Capistrano extension for deploying form local directory"
   s.email = "ekho@ekho.name"
   s.extra_rdoc_files = [
