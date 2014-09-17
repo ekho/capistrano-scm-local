@@ -19,7 +19,7 @@ class Capistrano::Local < Capistrano::SCM
     def release
       file_list = Dir.glob(File.join(repo_url, '*')).concat(Dir.glob(File.join(repo_url, '.[^.]*')))
 
-      on release_roles :all, in: :parallel do |host|
+      on release_roles :all do |host|
         file_list.each { |r| upload! r, release_path, recursive: true }
       end
     end
@@ -35,6 +35,7 @@ class Capistrano::Local < Capistrano::SCM
       # preparing archive
       run_locally do
         archive = fetch(:tmp_dir, Dir::tmpdir()) + '/capistrano/' + fetch(:alllication, 'distr') + "-#{fetch(:current_revision)}.tar.gz"
+        debug "Archiving #{repo_url} to #{archive}"
         execute :mkdir, '-p', File.dirname(archive)
 
         if File.exists?(archive) && !test(:tar, 'tzf', archive)
@@ -54,7 +55,8 @@ class Capistrano::Local < Capistrano::SCM
       end
 
       # uploading and unpacking
-      on release_roles :all, in: :parallel do |host|
+      on release_roles :all do |host|
+        debug "Uploading #{archive} to #{host}:#{release_path}"
         upload! archive, releases_path, verbose: false
         remote_archive = File.join(releases_path, File.basename(archive))
         execute :tar, 'xzf', remote_archive, '-C', release_path
