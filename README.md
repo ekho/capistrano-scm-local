@@ -3,13 +3,6 @@ capistrano-scm-local [![Gem Version](https://badge.fury.io/rb/capistrano-scm-loc
 
 allow deploy from local directory
 
-
-
-Capfile
-```ruby
-require 'capistrano/scm-local'
-```
-
 Gemfile
 ```ruby
 gem 'capistrano-scm-local', '~> 0.1', :github => 'i-ekho/capistrano-scm-local'
