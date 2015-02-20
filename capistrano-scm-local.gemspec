@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
     "test/helper.rb",
     "test/test_capistrano-git-local.rb"
   ]
-  s.homepage = "http://github.com/i-ekho/capistrano-scm-local"
+  s.homepage = "http://github.com/ekho/capistrano-scm-local"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.23"
@@ -69,4 +69,3 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<minitar>, ["~> 0.5.4"])
   end
 end
-

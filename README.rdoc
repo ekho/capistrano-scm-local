@@ -5,7 +5,7 @@ allow deploy from local directory
 
 Gemfile
 ```ruby
-gem 'capistrano-scm-local', '~> 0.1', :github => 'i-ekho/capistrano-scm-local'
+gem 'capistrano-scm-local', '~> 0.1', :github => 'ekho/capistrano-scm-local'
 ```
 OR
 ```ruby
