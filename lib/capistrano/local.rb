@@ -34,7 +34,7 @@ class Capistrano::Local < Capistrano::SCM
       archive = ''
       # preparing archive
       run_locally do
-        archive = fetch(:tmp_dir, Dir::tmpdir()) + '/capistrano/' + fetch(:alllication, 'distr') + "-#{fetch(:current_revision).strip}.tar.gz"
+        archive = fetch(:tmp_dir, Dir::tmpdir()) + '/capistrano/' + fetch(:application, 'distr') + "-#{fetch(:current_revision, 'UNKNOWN').strip}.tar.gz"
         debug "Archiving #{repo_url} to #{archive}"
         execute :mkdir, '-p', File.dirname(archive)
 
