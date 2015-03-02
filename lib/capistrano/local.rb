@@ -47,7 +47,7 @@ class Capistrano::Local < Capistrano::SCM
             within repo_url do
               execute :tar, 'czf', archive, '-C', repo_url, '.'
             end
-            execute :tar, 'tzf', archive
+            execute :tar, 'tzf', archive unless fetch(:scm_local_skip_tar_check, false)
           else
             execute :cp, repo_url, archive
           end
