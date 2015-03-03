@@ -32,9 +32,21 @@ class Capistrano::Local < Capistrano::SCM
 
     def release
       archive = ''
+
+      compression_flag = fetch(:scm_local_archive_compression_flag, 'z');
+      case compression_flag
+        when 'z'
+          archive_extension = '.tar.gz'
+        when 'j'
+          archive_extension = '.tar.bz'
+        else
+          archive_extension = '.tar'
+          compression_flag = ''
+      end
+
       # preparing archive
       run_locally do
-        archive = fetch(:tmp_dir, Dir::tmpdir()) + '/capistrano/' + fetch(:application, 'distr') + "-#{fetch(:current_revision, 'UNKNOWN').strip}.tar.gz"
+        archive = fetch(:tmp_dir, Dir::tmpdir()) + '/capistrano/' + fetch(:application, 'distr') + "-#{fetch(:current_revision, 'UNKNOWN').strip}#{archive_extension}"
         debug "Archiving #{repo_url} to #{archive}"
         execute :mkdir, '-p', File.dirname(archive)
 
@@ -43,11 +55,11 @@ class Capistrano::Local < Capistrano::SCM
         end
 
         unless File.exists?(archive)
-          if File.directory?(repo_url) || !File.fnmatch('*.tar.gz', repo_url)
+          if File.directory?(repo_url) || !File.fnmatch("*#{archive_extension}", repo_url)
             within repo_url do
-              execute :tar, 'czf', archive, '-C', repo_url, '.'
+              execute :tar, "c#{compression_flag}f", archive, '-C', repo_url, '.'
             end
-            execute :tar, 'tzf', archive unless fetch(:scm_local_skip_tar_check, false)
+            execute :tar, "t#{compression_flag}f", archive unless fetch(:scm_local_skip_tar_check, false)
           else
             execute :cp, repo_url, archive
           end
@@ -59,7 +71,7 @@ class Capistrano::Local < Capistrano::SCM
         debug "Uploading #{archive} to #{host}:#{release_path}"
         upload! archive, releases_path, verbose: false
         remote_archive = File.join(releases_path, File.basename(archive))
-        execute :tar, 'xzf', remote_archive, '-C', release_path
+        execute :tar, "x#{compression_flag}f", remote_archive, '-C', release_path
         execute :rm, '-f', remote_archive
       end
 
