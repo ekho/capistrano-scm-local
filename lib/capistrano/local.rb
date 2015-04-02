@@ -47,10 +47,11 @@ class Capistrano::Local < Capistrano::SCM
       # preparing archive
       run_locally do
         archive = fetch(:tmp_dir, Dir::tmpdir()) + '/capistrano/' + fetch(:application, 'distr') + "-#{fetch(:current_revision, 'UNKNOWN').strip}#{archive_extension}"
+        archive_sha1 = "#{archive}.sha1"
         debug "Archiving #{repo_url} to #{archive}"
         execute :mkdir, '-p', File.dirname(archive)
 
-        if File.exists?(archive) && !test(:tar, 'tzf', archive)
+        if File.exists?(archive) && (!File.exists?(archive_sha1) || !test(:shasum, '-s', '-c', archive_sha1))
           execute :rm, '-f', archive
         end
 
@@ -60,6 +61,7 @@ class Capistrano::Local < Capistrano::SCM
               execute :tar, "c#{compression_flag}f", archive, '-C', repo_url, '.'
             end
             execute :tar, "t#{compression_flag}f", archive unless fetch(:scm_local_skip_tar_check, false)
+            execute :shasum, archive, '>', archive_sha1
           else
             execute :cp, repo_url, archive
           end
