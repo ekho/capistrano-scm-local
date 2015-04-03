@@ -51,7 +51,7 @@ class Capistrano::Local < Capistrano::SCM
         debug "Archiving #{repo_url} to #{archive}"
         execute :mkdir, '-p', File.dirname(archive)
 
-        if File.exists?(archive) && (!File.exists?(archive_sha1) || !test(:shasum, '-s', '-c', archive_sha1))
+        if File.exists?(archive) && !fetch(:scm_local_skip_tar_check, false) && (!File.exists?(archive_sha1) || !test(:shasum, '-s', '-c', archive_sha1))
           execute :rm, '-f', archive
         end
 
@@ -60,8 +60,11 @@ class Capistrano::Local < Capistrano::SCM
             within repo_url do
               execute :tar, "c#{compression_flag}f", archive, '-C', repo_url, '.'
             end
-            execute :tar, "t#{compression_flag}f", archive unless fetch(:scm_local_skip_tar_check, false)
-            execute :shasum, archive, '>', archive_sha1
+
+            unless fetch(:scm_local_skip_tar_check, false)
+              execute :tar, "t#{compression_flag}f", archive
+              execute :shasum, archive, '>', archive_sha1
+            end
           else
             execute :cp, repo_url, archive
           end
