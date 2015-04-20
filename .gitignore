@@ -49,3 +49,4 @@ pkg
 #*.rbc
 
 /.idea/
+Gemfile.lock
