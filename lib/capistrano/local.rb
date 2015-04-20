@@ -58,7 +58,6 @@ class Capistrano::Local < Capistrano::SCM
         unless File.exists?(archive)
           if File.directory?(repo_url) || !File.fnmatch("*#{archive_extension}", repo_url)
             within repo_url do
-              #execute :tar, "c#{compression_flag}f", archive, '-C', repo_url, '.'
               execute :tar, "c#{compression_flag}f", archive, '.'
             end
 
