@@ -1,15 +1,7 @@
 namespace :local do
 
   def local_strategy
-    strategies = {:plain=>Capistrano::Local::PlainStrategy, :archive=>Capistrano::Local::ArchiveStrategy}
-
-    m = fetch(:local_strategy ? :local_strategy : :archive)
-    unless m.is_a?(Module)
-      abort "Invalid local_strategy: " + m.to_s unless strategies.include?(m)
-      m = strategies[m]
-    end
-
-    @local_strategy ||= Capistrano::Local.new(self, m)
+    @local_strategy ||= Capistrano::Local.new(self, Capistrano::Local::SCMStrategy)
   end
 
   desc 'Check that the source is reachable'
